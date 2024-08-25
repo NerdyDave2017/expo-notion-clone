@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["reactNative"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./app.db"
+}
+
+// Your data model
+
+model User {
+  id           Int     @id @default(autoincrement())
+  name         String
+  email        String   @default("")
+  notionFiles  NotionFile[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model NotionFile {
+  id           Int     @id @default(autoincrement())
+}
