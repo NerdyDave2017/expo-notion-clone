@@ -15,6 +15,7 @@ export const extendedClient = baseClient.$extends(reactiveHooksExtension());
 export async function initializeDb() {
   try {
     baseClient.$applyPendingMigrations();
+    console.log("migrations applied");
   } catch (e) {
     console.error(`failed to apply migrations: ${e}`);
     throw new Error(
