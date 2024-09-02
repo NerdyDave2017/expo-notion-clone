@@ -1,16 +1,8 @@
-import {
-  Image,
-  StyleSheet,
-  Platform,
-  SafeAreaView,
-  Button,
-} from "react-native";
-
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { StyleSheet, SafeAreaView } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { extendedClient } from "@/myDbModule";
+import DraggableNotionList from "@/components/DraggableNotionList";
 
 export default function HomeScreen() {
   const user = extendedClient.user.useFindFirst({
@@ -18,6 +10,10 @@ export default function HomeScreen() {
       id: 1,
     },
   });
+
+  const notions = extendedClient.notionFile.useFindMany();
+
+  console.log("Notions", notions);
 
   console.log(user);
 
@@ -28,14 +24,30 @@ export default function HomeScreen() {
       data: newUser,
     });
 
-    console.log("New user created");
+    console.log("New user created!!!");
+  };
+  const createNotion = () => {
+    const newNotion = {
+      title: "Test Notion",
+      content: "example",
+      icon: "🚀",
+      description: "",
+      coverPhoto: "",
+      type: "default",
+      authorId: 1,
+    };
+
+    extendedClient.notionFile.create({
+      data: newNotion,
+    });
+
+    console.log("New notion created!!!");
   };
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView>
-        <ThemedText>Hello World Notion!!!!</ThemedText>
-        <Button title="Create user" onPress={createUser} />
+      <SafeAreaView style={styles.container}>
+        <DraggableNotionList />
       </SafeAreaView>
     </ThemedView>
   );
