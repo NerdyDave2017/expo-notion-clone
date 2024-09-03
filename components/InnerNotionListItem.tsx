@@ -20,9 +20,8 @@ const InnerNotionListItem = ({ parentId }: InnerNotionListItemProps) => {
     },
   });
 
-  if (children.length === 0) {
+  if (children.length === 0)
     return <ThemedText style={{ color: "grey" }}>No pages inside!</ThemedText>;
-  }
 
   return (
     <View>

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { View, TouchableOpacity, Pressable, StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { InnerNotionListItem } from "./DraggableNotionListItem";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import { extendedClient } from "@/myDbModule";
 
 interface NotionFileItemProps {
   drag?: () => void;
@@ -18,10 +20,39 @@ const NotionFileItem = ({
   notionFile,
   drag,
 }: NotionFileItemProps) => {
+  const { showActionSheetWithOptions } = useActionSheet();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const onPress = () => {
+  const handleDropdownAction = () => {
     setIsOpen((value) => !value);
+  };
+
+  const handleOptionsAction = (id: number) => {
+    const options = ["Delete", "Cancel"];
+    const destructiveButtonIndex = 0;
+    const cancelButtonIndex = 1;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+      },
+      (selectedIndex: number | undefined) => {
+        switch (selectedIndex) {
+          case destructiveButtonIndex: {
+            extendedClient.notionFile.delete({
+              where: {
+                id: id,
+              },
+            });
+            break;
+          }
+          case cancelButtonIndex: {
+          }
+        }
+      }
+    );
   };
 
   return (
@@ -34,7 +65,7 @@ const NotionFileItem = ({
         onLongPress={drag}
       >
         <View style={styles.textWrapper}>
-          <Pressable onPress={onPress}>
+          <Pressable onPress={handleDropdownAction}>
             <Ionicons
               name={isOpen ? "chevron-down" : "chevron-forward-outline"}
               size={18}
@@ -47,7 +78,7 @@ const NotionFileItem = ({
           </ThemedText>
         </View>
         <View style={styles.iconWrapper}>
-          <Pressable>
+          <Pressable onPress={() => handleOptionsAction(notionFile.id)}>
             <Ionicons name="ellipsis-horizontal" size={18} color={iconColor} />
           </Pressable>
           <Pressable>
